@@ -1,10 +1,13 @@
-# sklozam.cz — technická modernizace
+# sklozam.cz — nový web
 
-Návrh nového webu pro Michala Zahradníka (Sklozam). Klient chtěl zachovat rámec starého webu z Webnode a jen ho technicky zmodernizovat.
+Návrh nového webu pro Michala Zahradníka (Sklozam). Zachovává obsah, strukturu a adresy starého webu z Webnode, ale design je nový: světlý papír, tmavá „vitrína“ pro skleněné modely, akcent v barvě plamene kahanu (Newsreader + Schibsted Grotesk). Klient nechce agresivní prodejní web — proto klidný tón, žádné pop-upy ani velké animace.
+
+První verze (věrná kopie starého rámce) je v historii gitu, commit „Modernizace webu sklozam.cz se zachováním původního rámce“.
 
 - Obsah a struktura stránek jsou v `build.py`, `python3 build.py` vygeneruje všechny `*/index.html` (a ?v= hashe k CSS/JS)
 - Adresy stránek jsou stejné jako na starém webu (`/rodokmen/`, `/sklenene-modely/hvezdice/` …), takže staré odkazy po přesunu domény fungují
-- Styly `assets/style.css`, skript `assets/main.js` (menu na mobilu, galerie, videa po kliknutí, mapa po rozbalení)
+- Styly `assets/style.css`, skript `assets/main.js` (menu, galerie, videa po kliknutí, jemné odhalení při scrollu)
+- Úvod: hero s Hvězdicí, čísla, pět generací (portréty vyříznuté z původního pásu v hlavičce), vitrína 10 modelů, video, školy s běžícím seznamem navštívených škol, rekordy a média
 - Fotky jsou originály ze starého webu (nejvýš 640 px, víc tam není)
 
 ## Co se změnilo proti starému webu

@@ -1,20 +1,35 @@
-// sklozam.cz — menu na mobilu, mapa, galerie (lightbox), videa z YouTube po kliknutí
+// sklozam.cz — menu, galerie, videa po kliknutí, jemná odhalení při scrollu
 (() => {
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* menu na mobilu */
-  const btn = $('.menu-btn'), menu = $('.menu');
-  btn?.addEventListener('click', () => {
-    const open = menu.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open);
+  /* hlavička: linka po odscrollování */
+  const top = $('.top');
+  const sentinel = document.createElement('div');
+  sentinel.style.cssText = 'position:absolute;top:0;height:8px;width:1px';
+  document.body.prepend(sentinel);
+  new IntersectionObserver(([e]) => top.classList.toggle('is-scrolled', !e.isIntersecting)).observe(sentinel);
+
+  /* mobilní menu */
+  const burger = $('.burger'), nav = $('#nav');
+  const setNav = open => {
+    nav.classList.toggle('open', open);
+    burger.setAttribute('aria-expanded', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  burger.addEventListener('click', () => setNav(!nav.classList.contains('open')));
+  $$('a', nav).forEach(a => a.addEventListener('click', () => setNav(false)));
+
+  /* rozbalovací „Další“ */
+  const more = $('.more'), moreBtn = $('.more-btn');
+  moreBtn?.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = more.classList.toggle('open');
+    moreBtn.setAttribute('aria-expanded', open);
   });
-
-  /* mapa se načte až po rozbalení */
-  $$('details.map').forEach(d => d.addEventListener('toggle', () => {
-    const f = $('iframe', d);
-    if (d.open && !f.src) f.src = f.dataset.src;
-  }));
+  document.addEventListener('click', e => { if (more && !more.contains(e.target)) { more.classList.remove('open'); moreBtn.setAttribute('aria-expanded', false); } });
+  addEventListener('keydown', e => { if (e.key === 'Escape') { setNav(false); more?.classList.remove('open'); } });
 
   /* tisk */
   $$('[data-print]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); print(); }));
@@ -30,6 +45,22 @@
     b.style.cursor = 'default';
   }, { once: true }));
 
+  /* jemné odhalení */
+  if (!reduce && 'IntersectionObserver' in window) {
+    const els = $$('.sec .split, .sec .sec-head, .gen-card, .mcard, .film, .school-pics, .school-text, .tcard, .records-docs, .records-text, .prose > .gal, .prose > .fig, .prose > .video, .gen, .pager');
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }), { rootMargin: '0px 0px -8% 0px' });
+    els.forEach((el, i) => {
+      if (el.getBoundingClientRect().top < innerHeight) return; // co je vidět hned, neanimovat
+      el.classList.add('rv');
+      if (el.matches('.mcard, .gen-card, .tcard')) el.style.transitionDelay = `${(i % 4) * 60}ms`;
+      io.observe(el);
+    });
+  }
+
   /* lightbox — listuje v rámci jedné galerie */
   const box = $('#lb');
   if (!box) return;
@@ -44,7 +75,7 @@
   };
   $$('a.lb').forEach(a => a.addEventListener('click', e => {
     e.preventDefault();
-    const gal = a.closest('.gal');
+    const gal = a.closest('.gal, .records-docs');
     group = gal ? $$('a.lb', gal) : [a];
     box.classList.toggle('single', group.length < 2);
     show(group.indexOf(a));

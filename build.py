@@ -79,55 +79,6 @@ MODELS = [
      'Skleněná pružina a pijící čáp, kterému říkám „Kejvák“.'),
 ]
 
-HOME = f'''
-<section class="intro">
-  <p class="lead">navštívili jste stránky jednoho z nejstarších sklářských rodů v Čechách, kde se již od roku 1775, po osm generací, předává toto řemeslo z otce na syna. Nevím, jestli se i předcházející generace živily jako skláři, čas odvál jejich osudy na cestu zapomnění a nám nezbývá než věřit, že své geny trpělivosti a lásky k řemeslu vložili do generací dalších.</p>
-  <p>O historii sklářského rodu Zahradníků se více dočtete v sekci <a href="~/rodokmen/">Rodokmen</a>.</p>
-  <p class="aside-note">Na Facebooku a jiných sociálních sítích mě nehledejte, masturbaci svého ega provádím pouze zde.</p>
-</section>
-
-<div class="tiles">
-  <a class="tile" href="~/sklenene-modely/">
-    <img src="{img('hvezdice-detail')}" alt="Skleněný hvězdicový motor" loading="lazy">
-    <span class="tile-t">Skleněné modely</span>
-    <span class="tile-d">Parní stroje, lokomotivy, motory i letadlo — všechno ze skla a všechno se hýbe.</span>
-  </a>
-  <a class="tile" href="~/rodokmen/">
-    <img src="{img('deda')}" alt="Děda Franz-Maria ve své dílně v Lipové ulici, 1926" loading="lazy">
-    <span class="tile-t">Rodokmen</span>
-    <span class="tile-d">Osm generací sklářů od roku 1775 — od Moravy přes Vídeň až do Prahy.</span>
-  </a>
-  <a class="tile" href="~/akce-pro-skoly/">
-    <img src="{img('pri-praci2')}" alt="Přednáška o skle ve škole" loading="lazy">
-    <span class="tile-t">Akce pro školy a školky</span>
-    <span class="tile-d">Dvouhodinová přednáška s ukázkami a každé dítě si vyfoukne svou skleněnou kuličku.</span>
-  </a>
-</div>
-
-<section class="box">
-  <h2>Výroba parního stroje ze skla</h2>
-  <p>Tříminutové video výroby parního stroje ze skla v sestříhané a zrychlené verzi.</p>
-  {yt('pI90-S3egc8', 'Výroba parního stroje ze skla — zrychlená verze')}
-</section>
-
-<section class="news">
-  <span class="news-tag">Nové</span>
-  <a href="~/sklenene-modely/ctyrvalcovy-radovy-motor/" class="news-link">
-    <img src="{img('ctyrvalec2')}" alt="Čtyřválcový řadový motor ze skla" loading="lazy">
-    <span><strong>Čtyřválcový řadový motor</strong><br>Klikovka je osmkrát zalomena a její úhlení není až tak snadné, abych ho dělal „naostro“.</span>
-  </a>
-</section>
-
-<section>
-  <h2>Občas jsem byl hostem v televizi</h2>
-  <ul class="links">
-    <li>{ext('http://www.ceskatelevize.cz/ivysilani/1126666764-toulava-kamera/207411000321028/', 'Toulavá kamera')} <span>(čas od 17:17)</span></li>
-    <li>{ext('http://www.ceskatelevize.cz/ivysilani/1095889602-barvy-zivota/210562221200010/obsah/110096-michal-zahradnik-sklar/', 'Barvy života')} <span>16. 4. 2010</span></li>
-    <li>{ext('https://www.hornbach.cz/aktuality/machr-stories-045-parni-stroje-ze-skla/', 'Hornbach — Machr stories: Parní stroje ze skla')}</li>
-  </ul>
-</section>
-'''
-
 ZACATKY = '''
 <p class="lead">Pro mě to všechno začalo v roce 1972, mnohem dříve, než se vůbec zrodil první skleněný parní stroj. Někdy v polovině sedmdesátých let, na učilišti, kdy jsem začal objevovat vlastnosti toho kouzelného materiálu — skla.</p>
 <p>V té době, kdy se člověk učí vyrábět tvary a používat postupy při výrobě, které již vyzkoušel někdo jiný, tak v té době jsem začal zhmotňovat svoji fantazii. Pokud si vzpomínám, tak jeden z prvních výrobků zcela se vymykající směru technického skláře a do té doby snad ani jiným nevyroben, byla skleněná loutka. Přátelil jsem se tenkrát s jednou slečnou, která hrála loutkové divadlo, a já jsem ji chtěl obdarovat něčím výjimečným. A tak jsem jí vyrobil loutku, marionetu, která měla pohyblivé ruce a nohy a byla zavěšena na skleněných nitích. Paradoxem bylo, že samotná výroba byla otázkou jedné či dvou hodin, ale vymyslet způsob, jak ji zabalit a transportovat, na to jsem potřeboval několik dní.</p>
@@ -440,6 +391,158 @@ SPRATELENE = f'''
 '''
 
 
+# ---------- úvodní stránka ----------
+
+UNIQUE_SCHOOLS = len(dict.fromkeys(SCHOOLS))
+
+GENS = [
+    ('gen-1869', '1869', 'Emanuel', 'sklárna ve Vídni, soudní znalec'),
+    ('gen-1896', '1896', 'Franz-Maria', 'dílna v Lipové ulici v Praze'),
+    ('gen-1924', '1924', 'František', 'sedmá generace'),
+    ('gen-1927', '1927', 'Pavel', 'můj otec, sklofoukač'),
+    ('gen-1957', '1957', 'Michal', 'osmá generace — to jsem já'),
+]
+
+
+def gens_strip(link=True):
+    cards = ''.join(
+        f'<figure class="gen-card"><div class="gen-img"><img src="{img(f)}" alt="{n}, narozen {y}" loading="lazy"></div>'
+        f'<figcaption><span class="gen-y">{y}</span><strong>{n}</strong><span>{d}</span></figcaption></figure>'
+        for f, y, n, d in GENS)
+    return f'<div class="gens">{cards}</div>'
+
+
+RODOKMEN = RODOKMEN.replace('<ol class="tree">', gens_strip() + '<ol class="tree">', 1)
+
+BIG = {'stephensenova-lokomotiva': 'big-a', 'letadlo': 'big-b'}
+MODEL_GRID = '<div class="mgrid">' + ''.join(
+    f'<a class="mcard {BIG.get(s, "")}" href="~/sklenene-modely/{s}/">'
+    f'<span class="mcard-img"><img src="{img(i)}" alt="{t} ze skla" loading="lazy"></span>'
+    f'<span class="mcard-txt"><span class="mcard-no">{n:02d}</span><span class="mcard-t">{t}</span><span class="mcard-d">{d}</span></span></a>'
+    for n, (s, t, i, d) in enumerate(MODELS, 1)) + '</div>'
+
+MODELY_INTRO = MODELY_INTRO.split('<div class="models">')[0] + MODEL_GRID
+
+HOME = f'''
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">Michal Zahradník · sklář v osmé generaci</p>
+      <h1>Parní stroje, motory i&nbsp;letadlo. <em>Ze skla.</em></h1>
+      <p class="hero-sub">Pohyblivé modely ze skla stavím od roku 1991. Sklářské řemeslo se v&nbsp;naší rodině dědí od roku 1775 a&nbsp;s&nbsp;kahanem jezdím i&nbsp;do škol.</p>
+      <p class="hero-cta"><a class="btn" href="~/sklenene-modely/">Prohlédnout modely</a> <a class="link-arrow" href="~/akce-pro-skoly/">Přednáška pro školy</a></p>
+    </div>
+    <figure class="hero-fig">
+      <div class="hero-frame"><img src="{img('hvezdice-detail')}" alt="Hvězdicový parní motor ze skla" width="1280" height="850" fetchpriority="high"></div>
+      <figcaption><strong>Hvězdice</strong> — hvězdicový parní motor. „Osobně ho považuji za své vrcholné dílo.“</figcaption>
+    </figure>
+  </div>
+  <dl class="wrap stats">
+    <div><dt>1775</dt><dd>první sklář v rodu</dd></div>
+    <div><dt>8.</dt><dd>generace sklářů</dd></div>
+    <div><dt>{len(MODELS)}</dt><dd>pohyblivých modelů</dd></div>
+    <div><dt>{UNIQUE_SCHOOLS}</dt><dd>navštívených škol a školek</dd></div>
+    <div><dt>3</dt><dd>české rekordy</dd></div>
+  </dl>
+</section>
+
+<section class="sec sec--gens">
+  <div class="wrap split">
+    <div class="split-head">
+      <p class="eyebrow">Rodokmen</p>
+      <h2>Osm generací,<br><em>jedno řemeslo.</em></h2>
+    </div>
+    <div class="split-body">
+      <p class="lead">Dobrý den, navštívili jste stránky jednoho z nejstarších sklářských rodů v Čechách, kde se již od roku 1775, po osm generací, předává toto řemeslo z otce na syna.</p>
+      <p>Nevím, jestli se i předcházející generace živily jako skláři, čas odvál jejich osudy na cestu zapomnění a nám nezbývá než věřit, že své geny trpělivosti a lásky k řemeslu vložili do generací dalších.</p>
+      <p><a class="link-arrow" href="~/rodokmen/">Celý rodokmen od roku 1775</a></p>
+    </div>
+  </div>
+  <div class="wrap">{gens_strip()}</div>
+</section>
+
+<section class="sec sec--dark" id="modely">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Skleněné modely</p>
+        <h2>Všechno se hýbe. <em>Všechno je sklo.</em></h2>
+      </div>
+      <p>Šrouby ani nýty ve skle nepoužijete. Na některých modelech mi vymýšlení a výroba přípravků zabrala až pětkrát víc času než samotná výroba.</p>
+    </div>
+    {MODEL_GRID}
+  </div>
+  <div class="wrap film">
+    <div class="film-text">
+      <p class="eyebrow">Video</p>
+      <h3>Tři minuty u&nbsp;kahanu</h3>
+      <p>Výroba parního stroje ze skla v&nbsp;sestříhané a&nbsp;zrychlené verzi — od trubice až po první otáčku setrvačníku.</p>
+    </div>
+    {yt('pI90-S3egc8', 'Výroba parního stroje ze skla — zrychlená verze')}
+  </div>
+</section>
+
+<section class="sec sec--school">
+  <div class="wrap school">
+    <div class="school-pics">
+      <img class="sp-1" src="{img('pri-praci2')}" alt="Přednáška o skle ve třídě" loading="lazy">
+      <img class="sp-2" src="{img('pri-praci3')}" alt="Ukázka tvarování skla nad kahanem" loading="lazy">
+      <img class="sp-3" src="{img('pri-praci1')}" alt="Děti u sklářského pracoviště" loading="lazy">
+    </div>
+    <div class="school-text">
+      <p class="eyebrow">Pro školy a školky</p>
+      <h2>Sklo kolem nás</h2>
+      <p class="lead">Dvouhodinová přednáška o skle s&nbsp;ukázkami tvarování nad kahanem. Na konci si každé dítě vyfoukne vlastní skleněnou kuličku a&nbsp;odnese si ji domů.</p>
+      <ul class="ticks">
+        <li><strong>2 × 45 minut</strong> pro jednu třídu, za den až čtyři třídy</li>
+        <li><strong>Od tří let</strong> — i předškoláci si kuličku nafouknou</li>
+        <li><strong>Mobilní pracoviště</strong> 2 × 2 m, připraveno za 20 minut</li>
+        <li><strong>5 000 Kč</strong> do 40 dětí, každé další 100 Kč, cestovné 8 Kč/km</li>
+      </ul>
+      <blockquote class="aside-quote">„U mladších pak bývá hlavním problémem utěsnění rtů okolo trubičky, takže funí sice pěkně, ale všude okolo…“</blockquote>
+      <p class="hero-cta"><a class="btn" href="~/akce-pro-skoly/">Více o přednášce</a> <a class="link-arrow" href="http://folkcraft.eu/zahradnik/" target="_blank" rel="noopener">Vybrat termín v kalendáři</a></p>
+    </div>
+  </div>
+  <div class="ticker" aria-label="Některé z navštívených škol"><div class="ticker-track">{''.join(f'<span>{html.escape(x)}</span>' for x in list(dict.fromkeys(SCHOOLS))[:60])}{''.join(f'<span aria-hidden="true">{html.escape(x)}</span>' for x in list(dict.fromkeys(SCHOOLS))[:60])}</div></div>
+</section>
+
+<section class="sec">
+  <div class="wrap trio">
+    <a class="tcard" href="~/remeslne-trhy/"><img src="{img('stanek-2')}" alt="Předvádění výroby na řemeslném trhu" loading="lazy"><span class="tcard-t">Řemeslné trhy</span><span class="tcard-d">Pojízdná sklárna jako přívěs za auto. Předvádím foukání skla a lidé si mohou vyfouknout vlastní kuličku.</span></a>
+    <a class="tcard" href="~/technicke-sklo/"><img src="{img('trivalec-detail-soupe')}" alt="Detail broušeného skla" loading="lazy"><span class="tcard-t">Technické sklo</span><span class="tcard-d">Výroba a oprava laboratorního a technického skla v rámci možností mé dílny.</span></a>
+    <a class="tcard" href="~/ostatni-vyrobky/"><img src="{img('kejvaci')}" alt="Pijící ptáčci ze skla" loading="lazy"><span class="tcard-t">Ostatní výrobky</span><span class="tcard-d">Drobnosti ze skla na Fléru a výroba na přání — spojím vaše představy a moje možnosti.</span></a>
+  </div>
+</section>
+
+<section class="sec sec--paper">
+  <div class="wrap records">
+    <div class="records-docs">
+      <a href="{img('cert-lok')}" class="lb" data-cap="Certifikát o vytvoření českého rekordu — skleněný parní stroj"><img src="{img('cert-lok')}" alt="Certifikát českého rekordu — parní lokomotiva" loading="lazy"></a>
+      <a href="{img('cert-let')}" class="lb" data-cap="Certifikát o vytvoření českého rekordu — let skleněného letadla"><img src="{img('cert-let')}" alt="Certifikát českého rekordu — letadlo" loading="lazy"></a>
+      <a href="{img('sklenena-pruzina')}" class="lb" data-cap="Certifikát o vytvoření českého rekordu — skleněná pružina"><img src="{img('sklenena-pruzina')}" alt="Certifikát českého rekordu — skleněná pružina" loading="lazy"></a>
+    </div>
+    <div class="records-text">
+      <p class="eyebrow">Rekordy a ocenění</p>
+      <h2>Zapsáno i&nbsp;v&nbsp;knize rekordů</h2>
+      <ul class="rec-list">
+        <li><span>2000</span>Let skleněného letadla — český rekord</li>
+        <li><span>2002</span>Funkční skleněný model parní lokomotivy — český rekord</li>
+        <li><span>—</span>Skleněná pružina — český rekord</li>
+        <li><span>2005</span>Rekordman roku</li>
+      </ul>
+      <p><a class="link-arrow" href="~/diplomy-a-oceneni/">Všechny diplomy a ocenění</a></p>
+      <h3 class="media-h">Občas jsem byl hostem v televizi</h3>
+      <ul class="media">
+        <li>{ext('http://www.ceskatelevize.cz/ivysilani/1126666764-toulava-kamera/207411000321028/', 'Toulavá kamera')} <span>ČT, čas od 17:17</span></li>
+        <li>{ext('http://www.ceskatelevize.cz/ivysilani/1095889602-barvy-zivota/210562221200010/obsah/110096-michal-zahradnik-sklar/', 'Barvy života')} <span>ČT, 16. 4. 2010</span></li>
+        <li>{ext('https://www.hornbach.cz/aktuality/machr-stories-045-parni-stroje-ze-skla/', 'Machr stories: Parní stroje ze skla')} <span>Hornbach</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+'''
+
+
 # ---------- struktura webu ----------
 # (cesta, položka v menu, titulek stránky, popis, obsah, rodič)
 PAGES = [
@@ -465,30 +568,33 @@ PAGES.append(('sitemap', None, 'Mapa stránek', 'Přehled všech stránek.', SIT
 BYPATH = {p[0]: p for p in PAGES}
 
 
-def menu_html(cur):
-    section = cur.split('/')[0]
-    out = ['<ul class="menu-list">']
-    for path, label, _, _, _, parent in PAGES:
-        if not label or parent:
-            continue
-        on = ' aria-current="page"' if path == cur else ''
-        cls = ' class="in"' if path and path.split('/')[-1] == section and path != cur else ''
-        out.append(f'<li{cls}><a href="~/{path + "/" if path else ""}"{on}>{label}</a>')
-        kids = [p for p in PAGES if p[5] == path]
-        if kids and section == path.split('/')[0] and path:
-            out.append('<ul>')
-            for k in kids:
-                kon = ' aria-current="page"' if k[0] == cur else ''
-                out.append(f'<li><a href="~/{k[0]}/"{kon}>{k[1]}</a></li>')
-            out.append('</ul>')
-        out.append('</li>')
-    out.append('</ul>')
-    return ''.join(out)
+NAV = [
+    ('sklenene-modely', 'Skleněné modely'),
+    ('rodokmen', 'Rodokmen'),
+    ('jak-to-zacalo', 'Mé začátky'),
+    ('akce-pro-skoly', 'Pro školy'),
+    ('remeslne-trhy', 'Řemeslné trhy'),
+]
+MORE = [
+    ('ostatni-vyrobky', 'Ostatní výrobky'),
+    ('technicke-sklo', 'Technické sklo'),
+    ('diplomy-a-oceneni', 'Diplomy a ocenění'),
+    ('spratelene-weby', 'Spřátelené weby'),
+]
+
+
+def nav_html(cur):
+    sec = cur.split('/')[0]
+    cur_attr = lambda p: ' aria-current="page"' if p == sec else ''
+    items = ''.join(f'<li><a href="~/{p}/"{cur_attr(p)}>{t}</a></li>' for p, t in NAV)
+    more_on = ' is-on' if sec in [p for p, _ in MORE] else ''
+    more = ''.join(f'<li><a href="~/{p}/"{cur_attr(p)}>{t}</a></li>' for p, t in MORE)
+    return (f'<ul class="nav-list">{items}'
+            f'<li class="more{more_on}"><button class="more-btn" aria-expanded="false">Další</button><ul class="more-list">{more}</ul></li>'
+            f'<li class="nav-contact"><a href="#kontakt" class="btn btn--sm">Kontakt</a></li></ul>')
 
 
 def crumbs(cur):
-    if not cur:
-        return ''
     parts, acc = [('', 'Úvod')], ''
     for seg in cur.split('/'):
         acc = f'{acc}/{seg}' if acc else seg
@@ -496,24 +602,29 @@ def crumbs(cur):
         if p:
             parts.append((acc, p[1] or p[2]))
     items = [f'<a href="~/{a + "/" if a else ""}">{t}</a>' for a, t in parts[:-1]] + [f'<span aria-current="page">{parts[-1][1]}</span>']
-    return '<nav class="crumbs" aria-label="Drobečková navigace">' + ' <i>›</i> '.join(items) + '</nav>'
+    return '<nav class="crumbs" aria-label="Drobečková navigace">' + '<i>/</i>'.join(items) + '</nav>'
 
 
 def pager(cur):
-    """Předchozí / další model pod stránkou modelu."""
     slugs = [m[0] for m in MODELS]
     s = cur.split('/')[-1]
     if not cur.startswith('sklenene-modely/') or s not in slugs:
         return ''
     i = slugs.index(s)
-    prev = MODELS[i - 1] if i > 0 else None
-    nxt = MODELS[i + 1] if i < len(MODELS) - 1 else None
-    a = lambda m, cls, lab: f'<a class="{cls}" href="~/sklenene-modely/{m[0]}/"><small>{lab}</small>{m[1]}</a>' if m else '<span></span>'
-    return f'<nav class="pager">{a(prev, "prev", "← Předchozí model")}{a(nxt, "next", "Další model →")}</nav>'
+    prev = MODELS[i - 1] if i > 0 else MODELS[-1]
+    nxt = MODELS[(i + 1) % len(MODELS)]
+    a = lambda m, cls, lab: (f'<a class="pg {cls}" href="~/sklenene-modely/{m[0]}/"><img src="{img(m[2])}" alt="" loading="lazy">'
+                             f'<span><small>{lab}</small>{m[1]}</span></a>')
+    return f'<nav class="pager" aria-label="Další modely">{a(prev, "prev", "Předchozí model")}{a(nxt, "next", "Další model")}</nav>'
 
+
+SCHOOL_BAND = '''<aside class="band"><div class="wrap band-in">
+  <div><p class="eyebrow">Pro školy a školky</p><p class="band-t">Přednáška o skle s ukázkami nad kahanem. Každé dítě si vyfoukne vlastní kuličku.</p></div>
+  <a class="btn btn--light" href="~/akce-pro-skoly/">Více o přednášce</a>
+</div></aside>'''
 
 LAYOUT = '''<!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -522,74 +633,89 @@ LAYOUT = '''<!DOCTYPE html>
 <link rel="canonical" href="{canon}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
-<meta property="og:image" content="{site}/assets/img/illustration.jpg">
-<meta name="theme-color" content="#B9C2D8">
+<meta property="og:image" content="{site}/assets/img/hvezdice-detail.jpg">
+<meta name="theme-color" content="#0E1824">
 <link rel="icon" href="~/assets/favicon.svg?v={v_fav}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..500&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="~/assets/style.css?v={v_css}">
+<script>document.documentElement.classList.remove('no-js')</script>
 <script src="~/assets/main.js?v={v_js}" defer></script>
 </head>
-<body>
+<body class="{bodycls}">
 <a class="skip" href="#obsah">Přeskočit na obsah</a>
-<div class="sheet">
-  <header class="head">
-    <div class="head-top">
-      <div>
-        <a class="name" href="~/">Michal Zahradník</a>
-        <p class="motto">… z Boží vůle sklář…</p>
-      </div>
-      <p class="head-meta">Sklářský rod od roku 1775<br><span>osmá generace</span></p>
-      <button class="menu-btn" aria-expanded="false" aria-controls="side">Menu</button>
-    </div>
-    <figure class="banner">
-      <img src="~/assets/img/illustration.jpg" width="900" height="278" alt="Pět generací sklářů Zahradníků — 1869, 1896, 1924, 1927 a 1957">
-    </figure>
-  </header>
-
-  <div class="main">
-    <aside class="side" id="side">
-      <nav class="menu" aria-label="Hlavní menu">{menu}</nav>
-      <section class="contact" aria-labelledby="kontakt-h">
-        <h2 id="kontakt-h">Kontakt</h2>
-        <p><strong>Michal Zahradník — Sklozam</strong><br>Švecova 398/12<br>Praha 4, Chodov<br>149 00</p>
-        <p class="contact-ic">IČ: 10133640</p>
-        <p><a href="tel:+420608969213">+420 608 969 213</a><br><a href="mailto:sklozam@gmail.com">sklozam@gmail.com</a></p>
-        <details class="map">
-          <summary>Zobrazit mapu</summary>
-          <iframe title="Mapa — Švecova 398/12, Praha 4" loading="lazy" data-src="https://maps.google.com/maps?q=50.0354482,14.5142903&z=15&output=embed" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </details>
-      </section>
-      <figure class="stamp">
-        <img src="~/assets/img/turisticka-znamka.jpg" alt="Výroční turistická známka Muzea řemesel Letohrad, Řemeslnická sobota 10. 7. 2010" loading="lazy">
-        <figcaption>Turistická známka — Muzeum řemesel Letohrad, 2010</figcaption>
-      </figure>
-    </aside>
-
-    <main class="content" id="obsah">
-      {crumbs}
-      <h1>{h1}</h1>
-      {body}
-      {pager}
-    </main>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="logo" href="~/" aria-label="Michal Zahradník — úvod">
+      <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c-1.4 6-6.5 8.4-6.5 14.6a6.5 6.5 0 0 0 13 0C22.5 11.4 17.4 9 16 3z"/><path d="M16 13.5c-.7 3-3 4.3-3 7a3 3 0 0 0 6 0c0-2.7-2.3-4-3-7z"/></svg>
+      <span class="logo-t">Michal Zahradník<small>sklář · od roku 1775</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Hlavní menu">{nav}</nav>
+    <button class="burger" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
   </div>
+</header>
 
-  <footer class="foot">
-    <p>© 2026 Michal Zahradník — Sklozam · IČ 10133640</p>
-    <p><a href="~/">Úvodní stránka</a> | <a href="~/sitemap/">Mapa stránek</a> | <a href="#" data-print>Tisk</a></p>
-  </footer>
-</div>
+<main id="obsah">
+{main}
+</main>
+
+{band}
+
+<footer class="foot" id="kontakt">
+  <div class="wrap foot-grid">
+    <div class="foot-main">
+      <p class="eyebrow">Kontakt</p>
+      <p class="foot-h">Napište mi, nebo zavolejte.</p>
+      <p class="foot-big"><a href="mailto:sklozam@gmail.com">sklozam@gmail.com</a><br><a href="tel:+420608969213">+420 608 969 213</a></p>
+      <p class="foot-quote">„Na Facebooku a jiných sociálních sítích mě nehledejte, masturbaci svého ega provádím pouze zde.“</p>
+    </div>
+    <div class="foot-col">
+      <p class="foot-label">Adresa</p>
+      <p>Michal Zahradník — Sklozam<br>Švecova 398/12<br>149 00 Praha 4, Chodov</p>
+      <p class="foot-label">IČ</p>
+      <p>10133640</p>
+      <p><a href="https://maps.google.com/?q=50.0354482,14.5142903" target="_blank" rel="noopener">Zobrazit na mapě</a></p>
+    </div>
+    <div class="foot-col">
+      <p class="foot-label">Stránky</p>
+      <ul class="foot-links">
+        <li><a href="~/sklenene-modely/">Skleněné modely</a></li><li><a href="~/rodokmen/">Rodokmen</a></li>
+        <li><a href="~/jak-to-zacalo/">Mé sklářské začátky</a></li><li><a href="~/akce-pro-skoly/">Akce pro školy</a></li>
+        <li><a href="~/akce-pro-skoly/planovaci-kalendar/">Plánovací kalendář</a></li><li><a href="~/remeslne-trhy/">Řemeslné trhy</a></li>
+        <li><a href="~/ostatni-vyrobky/">Ostatní výrobky</a></li><li><a href="~/technicke-sklo/">Technické sklo</a></li>
+        <li><a href="~/diplomy-a-oceneni/">Diplomy a ocenění</a></li><li><a href="~/spratelene-weby/">Spřátelené weby</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <p>© 2026 Michal Zahradník — Sklozam</p>
+    <p><a href="~/sitemap/">Mapa stránek</a> · <a href="#" data-print>Tisk</a></p>
+  </div>
+</footer>
 
 <dialog class="lb-box" id="lb" aria-label="Zvětšená fotografie">
   <button class="lb-x" data-close aria-label="Zavřít">×</button>
   <button class="lb-nav lb-prev" aria-label="Předchozí">‹</button>
-  <figure><img src="" alt=""><figcaption></figcaption></figure>
+  <figure><img alt=""><figcaption></figcaption></figure>
   <button class="lb-nav lb-next" aria-label="Další">›</button>
 </dialog>
 </body>
 </html>
 '''
+
+PAGE_MAIN = '''<div class="page-head">
+  <div class="wrap">
+    {crumbs}
+    <h1>{h1}</h1>
+  </div>
+</div>
+<div class="wrap page-body">
+  <article class="prose">
+{body}
+  </article>
+  {pager}
+</div>'''
 
 
 def build():
@@ -598,20 +724,25 @@ def build():
         depth = len(path.split('/')) if path else 0
         rel = '../' * depth or './'
         full_title = title if not path else f'{title} — Michal Zahradník, sklář'
+        if path:
+            main = PAGE_MAIN.format(crumbs=crumbs(path), h1=title, body=body, pager=pager(path))
+        else:
+            main = body
+        is_school = path.startswith('akce-pro-skoly')
         page = LAYOUT.format(
             title=html.escape(full_title), desc=html.escape(desc, quote=True), site=SITE,
-            canon=f'{SITE}/{path + "/" if path else ""}', menu=menu_html(path), crumbs=crumbs(path),
-            h1='Dobrý den,' if not path else title, body=body, pager=pager(path), **v)
+            canon=f'{SITE}/{path + "/" if path else ""}', nav=nav_html(path), main=main,
+            band='' if (is_school or not path) else SCHOOL_BAND,
+            bodycls='home' if not path else 'page', **v)
         page = page.replace('~/', rel)
         out = os.path.join(ROOT, path, 'index.html')
         os.makedirs(os.path.dirname(out), exist_ok=True)
         with open(out, 'w', encoding='utf-8') as f:
             f.write(page)
-    # 404 pro GitHub Pages
+    nf_main = PAGE_MAIN.format(crumbs='', h1='Stránka nenalezena', pager='',
+                               body='<p class="lead">Tahle stránka tu není. Možná se přestěhovala při úpravě webu.</p><p><a class="link-arrow" href="~/">Zpět na úvodní stránku</a></p>')
     nf = LAYOUT.format(title='Stránka nenalezena — Michal Zahradník, sklář', desc='', site=SITE, canon=SITE + '/',
-                       menu=menu_html('404'), crumbs='', h1='Stránka nenalezena',
-                       body='<p class="lead">Tahle stránka tu není. Možná se přestěhovala při úpravě webu.</p><p><a href="~/">Zpět na úvodní stránku</a> nebo zkuste <a href="~/sitemap/">mapu stránek</a>.</p>',
-                       pager='', **v)
+                       nav=nav_html('404'), main=nf_main, band='', bodycls='page', **v)
     with open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8') as f:
         f.write(nf.replace('~/', '/sklozam/'))
     print(f'{len(PAGES)} stránek, css {v["v_css"]}, js {v["v_js"]}')
